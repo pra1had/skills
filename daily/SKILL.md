@@ -26,6 +26,10 @@ every run and **scaffolds if absent** (see "First run" below).
    Dataview plugins.
 3. **Exactly one live copy of every open task.** The sweep *moves* open tasks
    into today's note and **deletes them from the source note** — no tombstone.
+   **Order is fixed: write and save today's note first, then delete from the
+   source.** Never delete a source line before its copy is saved in today's note.
+   An interrupted run must fail toward a recoverable duplicate (the next sweep's
+   dedupe collapses it), never toward a lost task.
 4. **Completed tasks complete in-place and never move.** A checked `- [x]` stays
    under whatever horizon section it was in when completed; the sweep skips it and
    leaves it there. Past notes become the done-journal, completions sitting beside
@@ -67,7 +71,10 @@ every run and **scaffolds if absent** (see "First run" below).
    Then **empty the inbox**.
 2. **Move-and-stamp sweep.** For every *open* `- [ ]` task in prior daily notes,
    **move it into today's note and delete it from the source note**, preserving
-   its `(created: ...)`. Leave completed `- [x]` tasks where they are.
+   its `(created: ...)`. Do this in safe order: (a) write the task into today's
+   note and **save today's note**, then (b) delete the line from the source note.
+   Never delete from a source note before today's note holding its copy is saved.
+   Leave completed `- [x]` tasks where they are.
 3. **Regroup** by horizon ladder under the matching `##` sections. Place every
    delegated task (owner ≠ `@me`) under `## Waiting on`, **grouped by `@owner`**.
    An opt-in middle state exists only on request: "mark delivered, pending my
