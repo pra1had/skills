@@ -6,8 +6,8 @@ per-vault config and data stay in the vault and travel via that tool's own sync.
 
 ## Skills
 
-- `tasks/` — day-to-day task management for an Obsidian vault. Design reference:
-  `tasks/SPEC.md`; runnable skill: `tasks/SKILL.md`.
+- `daily/` — day-to-day task management for an Obsidian vault. Design reference:
+  `daily/SPEC.md`; runnable skill: `daily/SKILL.md`.
 
 ## New-machine recovery
 
@@ -17,7 +17,7 @@ The skill logic and the vault recover independently.
 2. **Symlink (machine-local, not synced):** from the vault root, re-create the
    link Claude Code reads:
    ```bash
-   ln -s ../../../Skills/tasks <vault>/.claude/skills/tasks
+   ln -s ../../../Skills/daily <vault>/.claude/skills/daily
    ```
 3. **Vault data:** the vault (including `diary/` notes, `diary/_tasks-config.md`,
    and `diary/_template.md`) returns via Obsidian Sync — nothing to do here.

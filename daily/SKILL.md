@@ -1,10 +1,10 @@
 ---
-name: tasks
+name: daily
 description: Day-to-day task management for an Obsidian vault — process the daily-note inbox, sweep open tasks forward into today's note, group by horizon, track delegation, and flag drift. Manual morning command; pure markdown, no plugins.
 disable-model-invocation: true
 ---
 
-# tasks
+# daily
 
 Day-to-day task management for this vault. **You capture messily; this skill
 files, links, schedules, and reconciles.** After a morning sweep, **today's
@@ -53,7 +53,7 @@ every run and **scaffolds if absent** (see "First run" below).
 - **Created date** — `(created: YYYY-MM-DD)`; powers staleness/drift.
 - **Owner** — `@name`. Owner ≠ `@me` ⇒ delegated (tracked under "Waiting on").
 
-## `/tasks` — the morning flow (no args)
+## `/daily` — the morning flow (no args)
 
 1. **Process inbox.** Read the `## Inbox` of today's note and all prior daily notes
    that still have inbox content. For each line:
@@ -83,10 +83,10 @@ every run and **scaffolds if absent** (see "First run" below).
 
 ## Optional verbs
 
-- `/tasks capture <text>` — append `<text>` to today's `## Inbox` and stop
+- `/daily capture <text>` — append `<text>` to today's `## Inbox` and stop
   (no full sweep). Same inbox the morning flow reads.
-- `/tasks review @bob` — read out all open tasks for owner `@bob`.
-- `/tasks review #area/wiki` — read out all open tasks in that area.
+- `/daily review @bob` — read out all open tasks for owner `@bob`.
+- `/daily review #area/wiki` — read out all open tasks in that area.
 
 ## Capture paths
 
@@ -123,7 +123,7 @@ If today's daily note does not exist, create it from `./diary/_template.md`
 
 ## Self-check (run before reporting done)
 
-After any `/tasks` run, confirm:
+After any `/daily` run, confirm:
 - [ ] No open `- [ ]` task remains in any *past* daily note (all swept forward).
 - [ ] Every open task in today's note has a `(created: YYYY-MM-DD)` stamp.
 - [ ] No task appears twice (one live copy).

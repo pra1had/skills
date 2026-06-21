@@ -1,11 +1,11 @@
-# `/tasks` Skill — Design Spec
+# `/daily` Skill — Design Spec
 
 > Day-to-day task management for the PKs-Life vault, agent-maintained, living
 > alongside (and linking one-way into) the LLM Wiki.
 >
 > Status: **spec approved 2026-06-21** via grilling session. Not yet built.
-> Destination: this file moves into the Skills GitHub repo at `tasks/` as the
-> design reference; the runnable skill is `tasks/SKILL.md`.
+> Destination: this file moves into the Skills GitHub repo at `daily/` as the
+> design reference; the runnable skill is `daily/SKILL.md`.
 
 ---
 
@@ -29,7 +29,7 @@ beyond `.obsidian`. So skill logic must not depend on Sync.
 | Artifact | Lives in | Sync mechanism |
 |---|---|---|
 | Skill logic (`SKILL.md`, this spec) | **GitHub "Skills" repo** | git |
-| Symlink `.claude/skills/tasks` → repo | machine-local | re-created per machine |
+| Symlink `.claude/skills/daily` → repo | machine-local | re-created per machine |
 | Daily notes (the task data) | **vault** `diary/YYYY-MM-DD.md` | Obsidian Sync |
 | Daily-note template | **vault** `diary/_template.md` | Obsidian Sync |
 | Personal config (areas/owners/horizons) | **vault** `diary/_tasks-config.md` | Obsidian Sync |
@@ -111,7 +111,7 @@ Separate **"what I do"** from **"what I'm waiting on."**
 # {{date:YYYY-MM-DD}}
 
 ## Inbox
-<!-- dump anything here anytime; agent files it on next /tasks run -->
+<!-- dump anything here anytime; agent files it on next /daily run -->
 
 ---
 
@@ -138,7 +138,7 @@ Separate **"what I do"** from **"what I'm waiting on."**
 skill. No scheduled/cloud agent (would risk piling up empty notes and can't
 resolve ambiguity interactively).
 
-`/tasks` (no args) runs the full morning flow:
+`/daily` (no args) runs the full morning flow:
 
 1. **Process inbox** — read `## Inbox` of recent note(s); for each item:
    classify area, detect/assign owner, infer horizon (ask if ambiguous),
@@ -153,8 +153,8 @@ resolve ambiguity interactively).
 5. **Summary** — print counts + the drift list for the user to act on.
 
 **Optional verbs:**
-- `/tasks capture <text>` — quick add to today's `## Inbox` (no full run).
-- `/tasks review @bob` / `/tasks review #area/wiki` — filtered read-out.
+- `/daily capture <text>` — quick add to today's `## Inbox` (no full run).
+- `/daily review @bob` / `/daily review #area/wiki` — filtered read-out.
 
 **Capture paths:** type directly into `## Inbox` (offline/mobile-safe), or say
 "add task…" in chat → the skill routes it to the same inbox. One source of truth.
@@ -184,9 +184,9 @@ Holds the per-vault personal taxonomy the generic skill reads:
 ## 10. Build checklist (when implementation is approved)
 
 - [ ] Create the GitHub **Skills** repo.
-- [ ] Author `tasks/SKILL.md` (frontmatter `name: tasks` + the §8 procedure)
-      and move this spec to `tasks/SPEC.md`.
-- [ ] Symlink `.claude/skills/tasks` → `<skills-repo>/tasks` (relative link,
+- [ ] Author `daily/SKILL.md` (frontmatter `name: daily` + the §8 procedure)
+      and move this spec to `daily/SPEC.md`.
+- [ ] Symlink `.claude/skills/daily` → `<skills-repo>/daily` (relative link,
       matching the existing `.claude/skills/*` convention).
 - [ ] Add `diary/_template.md` (§7) and wire Obsidian Daily Notes to use it.
 - [ ] Scaffold `diary/_tasks-config.md` (§9).
@@ -207,7 +207,7 @@ Holds the per-vault personal taxonomy the generic skill reads:
 | 7 | Dimensions = area, horizon, created, owner |
 | 8 | Horizon decay = sticky + nag; user demotes manually |
 | 9 | Delegation = `@owner` + `## Waiting on`; rolls forward; delivered = done |
-| 10 | Trigger = manual `/tasks` each morning |
-| 11 | Governance = a skill (not a contract doc); single `/tasks` skill |
+| 10 | Trigger = manual `/daily` each morning |
+| 11 | Governance = a skill (not a contract doc); single `/daily` skill |
 | 12 | Portability = generic skill in GitHub Skills repo, symlinked; vault holds config + data |
 | 13 | Syntax = pure markdown |
