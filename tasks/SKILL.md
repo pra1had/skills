@@ -27,7 +27,7 @@ every run and **scaffolds if absent** (see "First run" below).
 3. **Exactly one live copy of every open task.** The sweep *moves* open tasks
    into today's note and **deletes them from the source note** — no tombstone.
 4. **Completed tasks never move.** A checked `- [x]` stays in the note where it
-   was completed; past notes become the done-journal.
+   was completed; past notes become the done-journal — the `## Done today` section is a manual landing spot the sweep never files into.
 5. **Horizons never auto-change.** Flag drift; the user re-tags manually. Re-tag
    **only on explicit instruction** — never silent demotion.
 6. **Dates are absolute** `YYYY-MM-DD`, never relative.
@@ -53,7 +53,7 @@ every run and **scaffolds if absent** (see "First run" below).
 
 ## `/tasks` — the morning flow (no args)
 
-1. **Process inbox.** Read the `## Inbox` of today's note and any recent notes
+1. **Process inbox.** Read the `## Inbox` of today's note and all prior daily notes
    that still have inbox content. For each line:
    - classify **area** (`#area/...`) from config; ask only if genuinely ambiguous,
    - detect/assign **owner** (`@name`); default `@me`,
@@ -75,6 +75,7 @@ every run and **scaffolds if absent** (see "First run" below).
    - a delegated task idle past the delegated threshold (reframe: "delegated to
      @bob N days ago — check in?").
    **Flag only — never re-tag.** Offer keep / demote / drop per item.
+   Horizons and delegated tasks without a configured threshold in `_tasks-config.md` are intentionally never drift-flagged.
 5. **Summary.** Print counts per horizon, the Waiting-on roster, and the drift
    list for the user to act on.
 
@@ -112,6 +113,7 @@ then continue:
 - #today: nag after 1 day
 - #this-week: nag after 7 days
 - delegated: nag after 7 days idle
+<!-- horizons without a threshold above are never drift-flagged -->
 ```
 
 If today's daily note does not exist, create it from `./diary/_template.md`
