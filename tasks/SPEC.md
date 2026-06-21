@@ -48,8 +48,10 @@ symlink · vault returns via Obsidian Sync. Both halves recover independently.
 - **Move-and-stamp sweep.** Open tasks are *physically relocated* into today's
   note and **deleted from their source note** — exactly one live copy exists.
   No tombstone left behind (keeps old notes clean).
-- **Completed tasks never move.** They stay in the note where they were checked
-  off; past notes become a done-journal / daily record.
+- **Completed tasks complete in-place and never move.** A checked `[x]` stays
+  under whatever horizon section it was in; the sweep skips it. Past notes become
+  a done-journal / daily record, completions sitting beside their horizon. (There
+  is no separate "Done today" section — revised 2026-06-21 post-approval.)
 - **Staleness via created-date.** Every task carries `(created: YYYY-MM-DD)` so
   age and drift are computable without moving files or leaving trails.
 - **Pure markdown, no plugins.** Plain `- [ ]`, plain `#tags`, human-readable
@@ -128,11 +130,6 @@ Separate **"what I do"** from **"what I'm waiting on."**
 ---
 
 ## ⚠️ Drifted (agent flagged — you decide)
-
----
-
-## Done today
-<!-- completed tasks stay in the note where you checked them off -->
 ```
 
 ## 8. Operation

@@ -26,8 +26,10 @@ every run and **scaffolds if absent** (see "First run" below).
    Dataview plugins.
 3. **Exactly one live copy of every open task.** The sweep *moves* open tasks
    into today's note and **deletes them from the source note** — no tombstone.
-4. **Completed tasks never move.** A checked `- [x]` stays in the note where it
-   was completed; past notes become the done-journal — the `## Done today` section is a manual landing spot the sweep never files into.
+4. **Completed tasks complete in-place and never move.** A checked `- [x]` stays
+   under whatever horizon section it was in when completed; the sweep skips it and
+   leaves it there. Past notes become the done-journal, completions sitting beside
+   the horizon they were finished under.
 5. **Horizons never auto-change.** Flag drift; the user re-tags manually. Re-tag
    **only on explicit instruction** — never silent demotion.
 6. **Dates are absolute** `YYYY-MM-DD`, never relative.
@@ -127,7 +129,7 @@ After any `/tasks` run, confirm:
 - [ ] No task appears twice (one live copy).
 - [ ] Nothing under `Wiki/` was modified.
 - [ ] Today's note sections appear in template order: Inbox, Today, This week,
-      This sprint, Longer horizons, Waiting on, ⚠️ Drifted, Done today.
+      This sprint, Longer horizons, Waiting on, ⚠️ Drifted.
 - [ ] No horizon tag was changed without explicit user instruction.
 
 ## Manual trial-run (verification procedure)
