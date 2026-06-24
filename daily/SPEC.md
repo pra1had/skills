@@ -33,6 +33,7 @@ beyond `.obsidian`. So skill logic must not depend on Sync.
 | Daily notes (the task data) | **vault** `diary/YYYY-MM-DD.md` | Obsidian Sync |
 | Daily-note template | **vault** `diary/_template.md` | Obsidian Sync |
 | Personal config (areas/owners/horizons) | **vault** `diary/_tasks-config.md` | Obsidian Sync |
+| Run state (`_state.md` watermark) | **vault** `diary/_state.md` | Obsidian Sync |
 
 **Boundary rule:** repo = generic behavior; vault = config + data + template.
 The skill carries **zero personal data** and is reusable across vaults. On first
@@ -59,6 +60,10 @@ symlink · vault returns via Obsidian Sync. Both halves recover independently.
   portability gap; Model-1 makes cross-note aggregation largely redundant).
   Plain `- [ ]` is a strict subset of Tasks-plugin syntax, so adding plugins
   later is non-destructive.
+- **Watermark-bounded sweep.** `diary/_state.md` holds `Last swept: <date>`. The
+  sweep reads only notes dated ≥ the watermark (normally one), making scan cost
+  O(days-since-last-run), independent of vault size. Missing/corrupt watermark →
+  full-scan fallback that self-heals by writing a fresh watermark.
 
 ## 4. Task line format
 
@@ -140,17 +145,29 @@ resolve ambiguity interactively).
 
 `/daily` (no args) runs the full morning flow:
 
+0. **Read the watermark.** Read `./diary/_state.md` and parse `Last swept: <date>`.
+   This date marks the current *live note* (the one holding all open tasks) and
+   bounds the scan: every subsequent read of prior notes considers **only notes
+   dated ≥ this watermark** (normally just the live note, plus any newer notes you
+   created since — e.g. inbox dumps on days `/daily` was not run).
+   **If `_state.md` is missing or unparseable, fall back to scanning *all* prior
+   daily notes** (legacy behavior), then write a fresh watermark in step 6.
 1. **Process inbox** — read `## Inbox` of recent note(s); for each item:
    classify area, detect/assign owner, infer horizon (ask if ambiguous),
    match and link any `[[Wiki pages]]` (one-way), stamp `(created: ...)`,
    dedupe. Empty the inbox.
-2. **Move-and-stamp sweep** — relocate every open task from prior notes into
-   today's note; delete from source; preserve created-date.
+2. **Move-and-stamp sweep** — relocate every open task from notes selected by
+   the watermark (step 0) into today's note; delete from source; preserve
+   created-date.
 3. **Regroup** by horizon ladder; place delegated tasks under `## Waiting on`
    by owner.
 4. **Drift nag** — build `## ⚠️ Drifted` for: horizon tasks stale past their
    bucket, and delegated tasks idle past a threshold. Flag only; never re-tag.
 5. **Summary** — print counts + the drift list for the user to act on.
+6. **Advance the watermark.** Only after every selected source note is fully
+   reconciled (all open tasks moved and sources updated), overwrite
+   `./diary/_state.md` with `Last swept: <today>`. A crash before this point
+   leaves the watermark on the prior date, so the next run safely re-processes.
 
 **Optional verbs:**
 - `/daily capture <text>` — quick add to today's `## Inbox` (no full run).
@@ -211,3 +228,5 @@ Holds the per-vault personal taxonomy the generic skill reads:
 | 11 | Governance = a skill (not a contract doc); single `/daily` skill |
 | 12 | Portability = generic skill in GitHub Skills repo, symlinked; vault holds config + data |
 | 13 | Syntax = pure markdown |
+| 14 | Backward-scan scaling = **watermark** (`diary/_state.md`, `Last swept`), not a backlog file; missing→full-scan fallback |
+| 15 | Self-check "no open task in past notes" is a trusted invariant; full audit deferred to a future `/daily fsck` |

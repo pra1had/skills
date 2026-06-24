@@ -59,6 +59,14 @@ every run and **scaffolds if absent** (see "First run" below).
 
 ## `/daily` — the morning flow (no args)
 
+0. **Read the watermark.** Read `./diary/_state.md` and parse `Last swept: <date>`.
+   This date marks the current *live note* (the one holding all open tasks) and
+   bounds the scan: every subsequent read of prior notes considers **only notes
+   dated ≥ this watermark** (normally just the live note, plus any newer notes you
+   created since — e.g. inbox dumps on days `/daily` was not run).
+   **If `_state.md` is missing or unparseable, fall back to scanning *all* prior
+   daily notes** (legacy behavior), then write a fresh watermark in step 6.
+
 1. **Process inbox.** Read the `## Inbox` of today's note and all prior daily notes
    that still have inbox content. For each line:
    - classify **area** (`#area/...`) from config; ask only if genuinely ambiguous,
@@ -69,12 +77,13 @@ every run and **scaffolds if absent** (see "First run" below).
    - stamp `(created: <today>)` if missing,
    - dedupe against existing open tasks.
    Then **empty the inbox**.
-2. **Move-and-stamp sweep.** For every *open* `- [ ]` task in prior daily notes,
-   **move it into today's note and delete it from the source note**, preserving
-   its `(created: ...)`. Do this in safe order: (a) write the task into today's
-   note and **save today's note**, then (b) delete the line from the source note.
-   Never delete from a source note before today's note holding its copy is saved.
-   Leave completed `- [x]` tasks where they are.
+2. **Move-and-stamp sweep.** For every *open* `- [ ]` task in **the notes selected
+   by the watermark** (step 0 — notes dated ≥ `Last swept`), **move it into today's
+   note and delete it from the source note**, preserving its `(created: ...)`. Do
+   this in safe order: (a) write the task into today's note and **save today's
+   note**, then (b) delete the line from the source note. Never delete from a
+   source note before today's note holding its copy is saved. Leave completed
+   `- [x]` tasks where they are.
 3. **Regroup** by horizon ladder under the matching `##` sections. Place every
    delegated task (owner ≠ `@me`) under `## Waiting on`, **grouped by `@owner`**.
    An opt-in middle state exists only on request: "mark delivered, pending my
@@ -87,6 +96,10 @@ every run and **scaffolds if absent** (see "First run" below).
    Horizons and delegated tasks without a configured threshold in `_tasks-config.md` are intentionally never drift-flagged.
 5. **Summary.** Print counts per horizon, the Waiting-on roster, and the drift
    list for the user to act on.
+6. **Advance the watermark.** Only after every selected source note is fully
+   reconciled (all open tasks moved and sources updated), overwrite
+   `./diary/_state.md` with `Last swept: <today>`. A crash before this point
+   leaves the watermark on the prior date, so the next run safely re-processes.
 
 ## Optional verbs
 
@@ -125,13 +138,19 @@ then continue:
 <!-- horizons without a threshold above are never drift-flagged -->
 ```
 
+If `./diary/_state.md` does not exist, treat the watermark as absent: scan all
+prior daily notes this once, then create `./diary/_state.md` with
+`Last swept: <today>` at the end of the run.
+
 If today's daily note does not exist, create it from `./diary/_template.md`
 (or, if that is also absent, from the section structure listed in "Self-check").
 
 ## Self-check (run before reporting done)
 
 After any `/daily` run, confirm:
-- [ ] No open `- [ ]` task remains in any *past* daily note (all swept forward).
+- [ ] No open `- [ ]` task remains in any *past* daily note (maintained as a
+      trusted invariant by the sweep — not re-verified by full scan).
+- [ ] `./diary/_state.md` reads `Last swept: <today>` after a clean run.
 - [ ] Every open task in today's note has a `(created: YYYY-MM-DD)` stamp.
 - [ ] No task appears twice (one live copy).
 - [ ] Nothing under `Wiki/` was modified.
