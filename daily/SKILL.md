@@ -67,9 +67,11 @@ every run and **scaffolds if absent** (see "First run" below).
 
 0. **Read the watermark.** Read `./diary/_state.md` and parse `Last swept: <date>`.
    This date marks the current *live note* (the one holding all open tasks) and
-   bounds the scan: every subsequent read of prior notes considers **only notes
+   bounds **the sweep's scan** (step 2): the sweep considers **only notes
    dated ≥ this watermark** (normally just the live note, plus any newer notes you
-   created since — e.g. inbox dumps on days `/daily` was not run).
+   created since — e.g. inbox dumps on days `/daily` was not run). Inbox processing
+   (step 1) is deliberately broader — it still reads any prior note with leftover
+   inbox content, so nothing captured below the watermark is missed.
    **If `_state.md` is missing or unparseable, fall back to scanning *all* prior
    daily notes** (legacy behavior), then write a fresh watermark in step 6.
 
