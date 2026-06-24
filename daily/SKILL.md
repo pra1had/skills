@@ -37,6 +37,12 @@ every run and **scaffolds if absent** (see "First run" below).
 5. **Horizons never auto-change.** Flag drift; the user re-tags manually. Re-tag
    **only on explicit instruction** — never silent demotion.
 6. **Dates are absolute** `YYYY-MM-DD`, never relative.
+7. **Swept trace is plain-bullet history.** When a task is moved out, leave a
+   record of it in the source note under `## Carried forward → <today>` as a plain
+   `- ` bullet — **never a `- [ ]` checkbox** (a checkbox would be re-swept,
+   breaking rule 3). The trace is write-once history, never read by the sweep.
+   Preserve each line's `(created: ...)` and tags. A task carried N days leaves
+   one trace line per day in N notes.
 
 ## Task line format
 
@@ -81,9 +87,11 @@ every run and **scaffolds if absent** (see "First run" below).
    by the watermark** (step 0 — notes dated ≥ `Last swept`), **move it into today's
    note and delete it from the source note**, preserving its `(created: ...)`. Do
    this in safe order: (a) write the task into today's note and **save today's
-   note**, then (b) delete the line from the source note. Never delete from a
-   source note before today's note holding its copy is saved. Leave completed
-   `- [x]` tasks where they are.
+   note**; (b) in the source note, append the moved task as a **plain bullet**
+   (no `[ ]`) under a `## Carried forward → <today>` section at the bottom of that
+   note, preserving its `(created: ...)` and tags; (c) delete the original
+   `- [ ]` line from the source note. Never delete a source line before its copy
+   is saved in today's note. Leave completed `- [x]` tasks where they are.
 3. **Regroup** by horizon ladder under the matching `##` sections. Place every
    delegated task (owner ≠ `@me`) under `## Waiting on`, **grouped by `@owner`**.
    An opt-in middle state exists only on request: "mark delivered, pending my
@@ -157,6 +165,9 @@ After any `/daily` run, confirm:
 - [ ] Today's note sections appear in template order: Inbox, Today, This week,
       This sprint, Longer horizons, Waiting on, ⚠️ Drifted.
 - [ ] No horizon tag was changed without explicit user instruction.
+- [ ] Every source note that had tasks swept out carries a `## Carried forward →
+      <today>` section whose lines are plain bullets (no `- [ ]`).
+- [ ] No trace line is a `- [ ]` checkbox (else it will be re-swept next run).
 
 ## Manual trial-run (verification procedure)
 
@@ -168,6 +179,8 @@ To verify the skill end-to-end on a **scratch copy** (never the live diary):
 2. Run the morning flow against that dir.
 3. Confirm: inbox emptied; both inbox items are now tagged + `(created:)`-stamped
    tasks under a horizon; `old task` moved out of `<yesterday>.md` into today's
-   `## Today`; `<yesterday>.md` retains no open task; `old task` is listed under
-   `## ⚠️ Drifted` (8 days > `#today` 1-day threshold); the `[[Spaced Repetition]]`
-   link is present and the Wiki page is untouched.
+   `## Today`; `<yesterday>.md` retains no open `- [ ]` task **but now has a
+   `## Carried forward → <today>` section with a plain-bullet `old task` line
+   carrying its original `(created: ...)`**; `old task` is listed under
+   `## ⚠️ Drifted` (8 days > `#today` 1-day threshold); the
+   `[[Spaced Repetition]]` link is present and the Wiki page is untouched.

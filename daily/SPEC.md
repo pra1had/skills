@@ -46,9 +46,12 @@ symlink · vault returns via Obsidian Sync. Both halves recover independently.
 
 - **Single source of truth: today's note.** After the morning sweep,
   `diary/<today>.md` holds *all* open work. One file to look at.
-- **Move-and-stamp sweep.** Open tasks are *physically relocated* into today's
-  note and **deleted from their source note** — exactly one live copy exists.
-  No tombstone left behind (keeps old notes clean).
+- **Move-and-stamp sweep.** Open tasks are *relocated* into today's note and the
+  `- [ ]` line is deleted from the source — exactly one live copy. The source note
+  keeps a **per-item trace**: each moved task is recorded as a plain (non-checkbox)
+  bullet under `## Carried forward → <today>`, so old notes stay a faithful daily
+  record without re-introducing a second live copy (the trace is invisible to the
+  sweep, which scans `- [ ]` only).
 - **Completed tasks complete in-place and never move.** A checked `[x]` stays
   under whatever horizon section it was in; the sweep skips it. Past notes become
   a done-journal / daily record, completions sitting beside their horizon. (There
@@ -157,8 +160,9 @@ resolve ambiguity interactively).
    match and link any `[[Wiki pages]]` (one-way), stamp `(created: ...)`,
    dedupe. Empty the inbox.
 2. **Move-and-stamp sweep** — relocate every open task from notes selected by
-   the watermark (step 0) into today's note; delete from source; preserve
-   created-date.
+   the watermark (step 0) into today's note; append a per-item trace to the source
+   note under `## Carried forward → <today>` as a plain bullet; delete the original
+   `- [ ]` from source; preserve created-date.
 3. **Regroup** by horizon ladder; place delegated tasks under `## Waiting on`
    by owner.
 4. **Drift nag** — build `## ⚠️ Drifted` for: horizon tasks stale past their
@@ -219,7 +223,7 @@ Holds the per-vault personal taxonomy the generic skill reads:
 | 2 | Capture = daily-note inbox **and** conversational, reconciled to one inbox |
 | 3 | Filing = tasks live in daily notes, enriched in place |
 | 4 | Querying = pure agent-driven markdown (no Tasks/Dataview) |
-| 5 | Canonical = today's note (Model 1); move-and-stamp; no tombstone; created-date |
+| 5 | Canonical = today's note (Model 1); move-and-stamp; **per-item `## Carried forward` trace** (supersedes original "no tombstone", 2026-06-24); created-date |
 | 6 | Wiki linkage = one-way only; Wiki never written by task processing |
 | 7 | Dimensions = area, horizon, created, owner |
 | 8 | Horizon decay = sticky + nag; user demotes manually |
