@@ -69,14 +69,16 @@ every run and **scaffolds if absent** (see "First run" below).
    This date marks the current *live note* (the one holding all open tasks) and
    bounds **the sweep's scan** (step 2): the sweep considers **only notes
    dated ≥ this watermark** (normally just the live note, plus any newer notes you
-   created since — e.g. inbox dumps on days `/daily` was not run). Inbox processing
-   (step 1) is deliberately broader — it still reads any prior note with leftover
-   inbox content, so nothing captured below the watermark is missed.
-   **If `_state.md` is missing or unparseable, fall back to scanning *all* prior
-   daily notes** (legacy behavior), then write a fresh watermark in step 6.
+   created since — e.g. inbox dumps on days `/daily` was not run). Inbox processing 
+   (step 1) uses the same watermark bound as the sweep: read the inbox only of 
+   notes dated ≥ Last swept. New captures always land in today's note (or notes
+    created after the last run, which are ≥ watermark by construction), so this 
+    misses nothing under normal use. **If `_state.md` is missing or unparseable, 
+    fall back to scanning *all* prior daily notes** (legacy behavior), then write 
+    a fresh watermark in step 6.
 
-1. **Process inbox.** Read the `## Inbox` of today's note and all prior daily notes
-   that still have inbox content. For each line:
+1. **Process inbox.** Read the `## Inbox` of the notes selected by the watermark 
+   (dated ≥ Last swept) — normally just today's note. For each line:
    - classify **area** (`#area/...`) from config; ask only if genuinely ambiguous,
    - detect/assign **owner** (`@name`); default `@me`,
    - infer **horizon**; **ask if ambiguous** rather than guessing,
