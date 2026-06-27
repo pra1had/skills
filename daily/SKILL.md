@@ -67,15 +67,17 @@ every run and **scaffolds if absent** (see "First run" below).
 
 0. **Read the watermark.** Read `./diary/_state.md` and parse `Last swept: <date>`.
    This date marks the current *live note* (the one holding all open tasks) and
-   bounds **the sweep's scan** (step 2): the sweep considers **only notes
-   dated ≥ this watermark** (normally just the live note, plus any newer notes you
-   created since — e.g. inbox dumps on days `/daily` was not run). Inbox processing 
-   (step 1) uses the same watermark bound as the sweep: read the inbox only of 
-   notes dated ≥ Last swept. New captures always land in today's note (or notes
-    created after the last run, which are ≥ watermark by construction), so this 
-    misses nothing under normal use. **If `_state.md` is missing or unparseable, 
-    fall back to scanning *all* prior daily notes** (legacy behavior), then write 
-    a fresh watermark in step 6.
+   bounds **the sweep's scan** (step 2): the sweep considers **only notes dated ≥
+   this watermark** (normally just the live note, plus any newer notes you created
+   since — e.g. inbox dumps on days `/daily` was not run). Inbox processing (step
+   1) uses the same watermark bound as the sweep: read the inbox only of notes
+   dated ≥ `Last swept`. New captures always land in today's note (or notes created
+   after the last run, which are ≥ watermark by construction), so this misses
+   nothing under normal use. If you ever hand-edit the inbox of an already-swept
+   note (dated < `Last swept`), delete `_state.md` before the next run to force a
+   one-time full scan. **If `_state.md` is missing or unparseable, fall back to
+   scanning *all* prior daily notes** (legacy behavior), then write a fresh
+   watermark in step 6.
 
 1. **Process inbox.** Read the `## Inbox` of the notes selected by the watermark 
    (dated ≥ Last swept) — normally just today's note. For each line:
@@ -176,10 +178,15 @@ After any `/daily` run, confirm:
 ## Manual trial-run (verification procedure)
 
 To verify the skill end-to-end on a **scratch copy** (never the live diary):
-1. Make a temp dir with two notes: a `<yesterday>.md` holding one open
-   `- [ ] old task (created: <8 days ago>) #area/work #today`, and a fresh
-   today's note whose `## Inbox` has the lines `buy milk` and
-   `follow up on [[Spaced Repetition]]`.
+1. Make a temp dir with three notes plus state, so the run exercises the
+   watermark-bounded scan (not the legacy fallback):
+   - `<yesterday>.md` holding one open
+     `- [ ] old task (created: <8 days ago>) #area/work #today`,
+   - a fresh today's note whose `## Inbox` has the lines `buy milk` and
+     `follow up on [[Spaced Repetition]]`,
+   - a `<10 days ago>.md` (dated *before* the watermark) whose `## Inbox` holds a
+     stray line `should be ignored`,
+   - `_state.md` reading `Last swept: <yesterday>`.
 2. Run the morning flow against that dir.
 3. Confirm: inbox emptied; both inbox items are now tagged + `(created:)`-stamped
    tasks under a horizon; `old task` moved out of `<yesterday>.md` into today's
@@ -187,4 +194,6 @@ To verify the skill end-to-end on a **scratch copy** (never the live diary):
    `## Carried forward → <today>` section with a plain-bullet `old task` line
    carrying its original `(created: ...)`**; `old task` is listed under
    `## ⚠️ Drifted` (8 days > `#today` 1-day threshold); the
-   `[[Spaced Repetition]]` link is present and the Wiki page is untouched.
+   `[[Spaced Repetition]]` link is present and the Wiki page is untouched; and
+   **the `should be ignored` line in `<10 days ago>.md` was never read or
+   touched** (it sits below the watermark).
